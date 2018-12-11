@@ -4,26 +4,40 @@ require 'uri'
 require "net/http"
 
 module ScrapboxClient
-  class Hoge
+  class Client
     attr_reader :project_name
-    def initialize(project_name: project_name)
+
+    BASE_URI_V1 = "https://scrapbox.io"
+    URI_RESOURCE_MAP = {
+      page_list: "/api/pages/%{project_name}?skip=%{skip}&limit=%{limit}",
+      page: "/api/pages/%{project_name}/%{project_title}",
+      page_body: "/api/pages/%{project_name}/%{project_title}/text",
+      page_image: "/api/pages/%{project_name}/%{project_title}/icon",
+    }
+
+    def initialize(project_name:)
       @project_name = project_name
     end
 
     def fetch_page_list(skip: skip = 0, limit: limit = 100)
-      request_api
+      params = {
+        project_name: project_name,
+        skip: skip,
+        limit: limit,
+      }
+      request_api(resource: URI_RESOURCE_MAP[:page_list], params: params)
     end
 
     private
-    def request_api
-      uri = URI.parse('https://scrapbox.io/api/pages/' + project_name)
+    def request_api(resource:, params:)
+      uri = URI.parse(BASE_URI_V1 + sprintf(resource, params))
       res = Net::HTTP.start(uri.host, uri.port, use_ssl: uri.scheme == 'https') do |http|
         http.open_timeout = 5
         http.read_timeout = 10
         http.get(uri.request_uri)
       end
-      if res.code == '200'
-        print "error"
+      unless res.code == '200'
+        return false
       end
 
       res.each do |name, val|
