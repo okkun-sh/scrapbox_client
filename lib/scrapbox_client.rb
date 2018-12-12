@@ -25,7 +25,9 @@ module ScrapboxClient
         skip: skip,
         limit: limit,
       }
-      request_api(resource: URI_RESOURCE_MAP[:page_list], params: params)
+      res = request_api(resource: URI_RESOURCE_MAP[:page_list], params: params)
+
+      return res
     end
 
     private
@@ -37,12 +39,10 @@ module ScrapboxClient
         http.get(uri.request_uri)
       end
       unless res.code == '200'
-        return false
+        raise "request failed with status code " + res.code
       end
 
-      res.each do |name, val|
-        p "name=#{name}, val=#{val}"
-      end
+      return res
     end
   end
 end
