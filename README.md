@@ -20,7 +20,15 @@ Or install it yourself as:
 
 ## Usage
 
-TODO: Write usage instructions here
+```
+page_list = ScrapboxClient::Client.new(project_name: "apisample").fetch_page_list(skip: 0, limit: 20)
+
+page = ScrapboxClient::Client.new(project_name: "apisample").fetch_page(page_title: "api_sample_title")
+
+page_body = ScrapboxClient::Client.new(project_name: "apisample").fetch_page_body(page_title: "api_sample_title")
+
+page_image = ScrapboxClient::Client.new(project_name: "apisample").fetch_page_image(page_title: "api_sample_title")
+```
 
 ## Development
 
