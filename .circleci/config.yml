@@ -46,7 +46,6 @@ jobs:
           name: Run rspec in parallel
           command: |
             bundle exec rspec --profile 10 \
-                              --format RspecJunitFormatter \
                               --out test_results/rspec.xml \
                               --format progress \
 
